@@ -16,6 +16,7 @@ const PRICE_ESPRESSO float32 = 3.5
 const PRICE_LATTE float32 = 4
 const GLASSES_CAPACITY int = 600
 const PIN int = 7878
+const MAX_SUGAR_PORTION_SIZE int = 8
 
 const BYN_BILL_05 float32 = 0.5
 const BYN_BILL_1 float32 = 1
@@ -52,7 +53,7 @@ func main() {
 
 	clearScreen()
 
-	callMainMenu(glasses, userBalance, cashBalance, availablePinInputAttempts)
+	callMainMenu(&glasses, &userBalance, &cashBalance, availablePinInputAttempts)
 }
 
 /******************************************************************************
@@ -61,14 +62,14 @@ func main() {
  *
 ******************************************************************************/
 
-func callMainMenu(glasses int, userBalance float32, cashBalance float32, availablePinInputAttempts int) {
+func callMainMenu(glasses *int, userBalance *float32, cashBalance *float32, availablePinInputAttempts int) {
 
 	r := bufio.NewReader(os.Stdin)
 
 	for true {
 		choiseOption := 0
 
-		showMainMenu(userBalance, glasses)
+		showMainMenu(*userBalance, *glasses)
 
 		fmt.Print("Please, choise option: ")
 
@@ -79,7 +80,6 @@ func callMainMenu(glasses int, userBalance float32, cashBalance float32, availab
 		if err != nil {
 			clearScreen()
 			showWrongInputMessage()
-			time.Sleep(2 * time.Second)
 			clearScreen()
 			continue
 		}
@@ -136,7 +136,6 @@ func showMainMenu(userBalance float32, glasses int) {
 	showSymbolsRow()
 	fmt.Printf("*%-19v %-20v", "5. Service", "*")
 	showSymbolsRow()
-
 }
 
 func showLogo() {
@@ -184,8 +183,8 @@ func showCoffeeIsPurchased() {
 	showSymbolsRow()
 	showSymbolsRowWithMessage("Take your coffee, please!", ROW_LENGTH)
 	showSymbolsRow()
-	fmt.Println()
-	fmt.Println()
+	time.Sleep(2 * time.Second)
+	clearScreen()
 }
 
 func showNotEnoughMoneyWarning() {
@@ -194,8 +193,8 @@ func showNotEnoughMoneyWarning() {
 	showSymbolsRowWithMessage("You need to put some cash", ROW_LENGTH)
 	showSymbolsRowWithMessage("in coffe machine", ROW_LENGTH)
 	showSymbolsRow()
-	fmt.Println()
-	fmt.Println()
+	time.Sleep(2 * time.Second)
+	clearScreen()
 }
 
 func showNoGlassesWarning() {
@@ -203,16 +202,16 @@ func showNoGlassesWarning() {
 	showSymbolsRowWithMessage("Sorry we don't have glasses! Please,", ROW_LENGTH)
 	showSymbolsRowWithMessage("call our manager: ", ROW_LENGTH)
 	showSymbolsRow()
-	fmt.Println()
-	fmt.Println()
+	time.Sleep(2 * time.Second)
+	clearScreen()
 }
 
 func showMoneyFromUser(byn float32) {
 	showSymbolsRow()
 	fmt.Printf(" You put in coffe machine %0.1f BYN \n", byn)
 	showSymbolsRow()
-	fmt.Println()
-	fmt.Println()
+	time.Sleep(2 * time.Second)
+	clearScreen()
 }
 
 func showSymbolsRow() {
@@ -250,12 +249,11 @@ func showWrongInputMessage() {
 	showSymbolsRow()
 	showSymbolsRowWithMessage("Wrong input! Try again...", ROW_LENGTH)
 	showSymbolsRow()
-
-	fmt.Println()
-	fmt.Println()
+	time.Sleep(2 * time.Second)
+	clearScreen()
 }
 
-func callCashDepositMenu(userBalance float32, cashBalance float32) int {
+func callCashDepositMenu(userBalance *float32, cashBalance *float32) int {
 
 	r := bufio.NewReader(os.Stdin)
 
@@ -273,7 +271,6 @@ func callCashDepositMenu(userBalance float32, cashBalance float32) int {
 		if err != nil {
 			clearScreen()
 			showWrongInputMessage()
-			time.Sleep(2 * time.Second)
 			clearScreen()
 			continue
 		}
@@ -317,7 +314,7 @@ func callCashDepositMenu(userBalance float32, cashBalance float32) int {
  *
 ******************************************************************************/
 
-func callServiceMenu(currentGlassesNumber int, allowedCash float32, currentUserBalance float32, availablePinInputAttempts int) int {
+func callServiceMenu(currentGlassesNumber *int, allowedCash *float32, currentUserBalance *float32, availablePinInputAttempts int) int {
 
 	r := bufio.NewReader(os.Stdin)
 
@@ -325,7 +322,7 @@ func callServiceMenu(currentGlassesNumber int, allowedCash float32, currentUserB
 		choiseOption := -1
 		availablePinInputAttempts = MAX_PIN_INPUT_ATTEMPTS
 
-		showServiceMenu(currentGlassesNumber, allowedCash)
+		showServiceMenu(*currentGlassesNumber, *allowedCash)
 
 		fmt.Println("Select option or press 0 to exit: ")
 
@@ -334,7 +331,6 @@ func callServiceMenu(currentGlassesNumber int, allowedCash float32, currentUserB
 		if err != nil {
 			clearScreen()
 			showWrongInputMessage()
-			time.Sleep(2 * time.Second)
 			clearScreen()
 			continue
 		}
@@ -345,7 +341,7 @@ func callServiceMenu(currentGlassesNumber int, allowedCash float32, currentUserB
 
 		switch choiseOption {
 		case 0:
-			currentUserBalance = 0
+			*currentUserBalance = 0
 			return 0
 		case 1:
 			giveOutProceed(allowedCash)
@@ -377,8 +373,8 @@ func showGlasses(glassesCount int) {
 	fmt.Printf("%v glasses left", glassesCount)
 }
 
-func giveOutProceed(availableCash float32) {
-	availableCash = 0
+func giveOutProceed(availableCash *float32) {
+	*availableCash = 0
 
 	showSymbolsRow()
 	showSymbolsRowWithMessage("Opening the lock...", ROW_LENGTH)
@@ -403,11 +399,11 @@ func clearScreen() {
 	cmd.Run()
 }
 
-func fillCoffeeMachineWithGlasses(glassesLeft int) {
+func fillCoffeeMachineWithGlasses(glassesLeft *int) {
 	r := bufio.NewReader(os.Stdin)
 	newGlasses := 0
-	totalGlasses := glassesLeft
-	leftCapacity := GLASSES_CAPACITY - glassesLeft
+	totalGlasses := *glassesLeft
+	leftCapacity := GLASSES_CAPACITY - *glassesLeft
 
 	fmt.Println("How many glasses you want to insert?")
 	res, err := selectOption(r)
@@ -415,7 +411,6 @@ func fillCoffeeMachineWithGlasses(glassesLeft int) {
 	if err != nil {
 		clearScreen()
 		showWrongInputMessage()
-		time.Sleep(2 * time.Second)
 		clearScreen()
 		return
 	}
@@ -440,13 +435,15 @@ func fillCoffeeMachineWithGlasses(glassesLeft int) {
 			showSymbolsRowWithMessage("Container is full!", ROW_LENGTH)
 		}
 	} else {
-		glassesLeft = totalGlasses
+		*glassesLeft = totalGlasses
 		showSymbolsRowWithMessage("You successfully filled up the coffee box", ROW_LENGTH)
 		showSymbolsRowWithMessage(fmt.Sprintf("with %v glasses", newGlasses), ROW_LENGTH)
 	}
 	showSymbolsRow()
 	fmt.Println()
 	fmt.Println()
+	time.Sleep(2 * time.Second)
+	clearScreen()
 }
 
 func checkAccess(availablePinInputAttempts int) int {
@@ -462,7 +459,6 @@ func checkAccess(availablePinInputAttempts int) int {
 		if err != nil {
 			clearScreen()
 			showWrongInputMessage()
-			time.Sleep(2 * time.Second)
 			clearScreen()
 		}
 
@@ -494,8 +490,8 @@ func checkGlasses(availableGlasses int) int {
 	return availableGlasses
 }
 
-func isMoneyEnough(currentBalance float32, itemPrice float32) bool {
-	return currentBalance >= itemPrice
+func isMoneyEnough(currentBalance *float32, itemPrice float32) bool {
+	return *currentBalance >= itemPrice
 }
 
 func addSugar() int {
@@ -515,7 +511,6 @@ func addSugar() int {
 		if err != nil {
 			clearScreen()
 			showWrongInputMessage()
-			time.Sleep(2 * time.Second)
 			clearScreen()
 			continue
 		}
@@ -536,12 +531,26 @@ func addSugar() int {
 }
 
 func adjustPortionSize() int {
-	currentPortionSize := 4
+	currentPortionSize := MAX_SUGAR_PORTION_SIZE / 2
 	choiseOption := -1
 	r := bufio.NewReader(os.Stdin)
 
 	for {
+		clearScreen()
 		showSymbolsRow()
+
+		for i := 0; i < currentPortionSize; i++ {
+			fmt.Print("▓", " ")
+		}
+
+		sdf := MAX_SUGAR_PORTION_SIZE - currentPortionSize
+
+		for i := 0; i < sdf; i++ {
+			fmt.Print("░", " ")
+		}
+
+		fmt.Print("\n")
+
 		showSymbolsRowWithMessage("0 - confirm", ROW_LENGTH)
 		showSymbolsRowWithMessage("1 - increase", ROW_LENGTH)
 		showSymbolsRowWithMessage("2 - decrease", ROW_LENGTH)
@@ -553,7 +562,6 @@ func adjustPortionSize() int {
 		if err != nil {
 			clearScreen()
 			showWrongInputMessage()
-			time.Sleep(2 * time.Second)
 			clearScreen()
 			continue
 		}
@@ -569,8 +577,7 @@ func adjustPortionSize() int {
 				showSymbolsRowWithMessage("Sorry, can't increase sugar portion!", ROW_LENGTH)
 				showSymbolsRowWithMessage("It's maximum", ROW_LENGTH)
 				showSymbolsRow()
-				fmt.Println()
-				fmt.Println()
+				time.Sleep(2 * time.Second)
 			} else {
 				currentPortionSize++
 			}
@@ -580,24 +587,25 @@ func adjustPortionSize() int {
 				showSymbolsRowWithMessage("Sorry, can't decrease sugar portion!", ROW_LENGTH)
 				showSymbolsRowWithMessage("It's minimum!", ROW_LENGTH)
 				showSymbolsRow()
-				fmt.Println()
-				fmt.Println()
+				time.Sleep(2 * time.Second)
 			} else {
 				currentPortionSize--
 			}
 		default:
 			showWrongInputMessage()
 		}
+
+		clearScreen()
 	}
 }
 
-func giveCoffeeToUser(userBalance float32, price float32, glasses int) {
-	if checkGlasses(glasses) > 0 {
+func giveCoffeeToUser(userBalance *float32, price float32, glasses *int) {
+	if checkGlasses(*glasses) > 0 {
 		if isMoneyEnough(userBalance, price) {
 			addSugar()
+			*userBalance -= price
+			*glasses--
 			showCoffeeIsPurchased()
-			userBalance -= price
-			glasses--
 		} else {
 			showNotEnoughMoneyWarning()
 		}
@@ -606,10 +614,10 @@ func giveCoffeeToUser(userBalance float32, price float32, glasses int) {
 	}
 }
 
-func getMoneyFromUser(userBalance float32, cashBalance float32, byn float32) {
+func getMoneyFromUser(userBalance *float32, cashBalance *float32, byn float32) {
 	showMoneyFromUser(byn)
-	userBalance += byn
-	cashBalance += byn
+	*userBalance += byn
+	*cashBalance += byn
 }
 
 func selectOption(r *bufio.Reader) (int, error) {
