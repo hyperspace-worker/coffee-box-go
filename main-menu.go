@@ -77,9 +77,9 @@ func showMainMenu(userBalance float32, glasses int) {
 	fmt.Printf("%-25v %v\n", "Number of glasses:", glasses)
 	showSymbolsRow()
 	showCoffeeList()
-	fmt.Printf("*%-24v %-15v", "4. Cash deposit", "*")
+	fmt.Printf("*%-24v %-15v\n", "4. Cash deposit", "*")
 	showSymbolsRow()
-	fmt.Printf("*%-19v %-20v", "5. Service", "*")
+	fmt.Printf("*%-19v %-20v\n", "5. Service", "*")
 	showSymbolsRow()
 }
 
@@ -160,34 +160,33 @@ func showMoneyFromUser(byn float32) {
 }
 
 func showSymbolsRow() {
-	for i := 0; i < 40; i++ {
+	for i := 0; i < ROW_LENGTH; i++ {
 		fmt.Print("*")
 	}
 	fmt.Print("\n")
 }
 
 func showSymbolsRowWithMessage(message string, rowLength int) {
-	fmt.Print("*")
+	fmt.Print("* ")
 
-	diff := rowLength - len(message)
+	freeSpace := (rowLength - 4 - len(message))
+	halfOfFreeSpace := freeSpace / 2
 
-	for i := 0; i < (diff / 2); i++ {
+	for i := 0; i < halfOfFreeSpace; i++ {
 		fmt.Print(" ")
 	}
 
 	fmt.Print(message)
 
-	if diff%2 == 1 {
-		for i := 0; i < diff; i++ {
-			fmt.Print(" ")
-		}
-	} else {
-		for i := 0; i < (diff/2)-1; i++ {
-			fmt.Print(" ")
-		}
+	for i := 0; i < halfOfFreeSpace; i++ {
+		fmt.Print(" ")
 	}
 
-	fmt.Print("*\n")
+	if freeSpace%2 == 1 {
+		fmt.Print(" ")
+	}
+
+	fmt.Printf(" *\n")
 }
 
 func showWrongInputMessage() {
@@ -196,6 +195,7 @@ func showWrongInputMessage() {
 	showSymbolsRow()
 	time.Sleep(2 * time.Second)
 	clearScreen()
+	fmt.Print(" *\n")
 }
 
 func callCashDepositMenu(userBalance *float32, cashBalance *float32) int {
