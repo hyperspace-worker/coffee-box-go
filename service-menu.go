@@ -23,7 +23,6 @@ func callServiceMenu(currentGlassesNumber *int, allowedCash *float32, currentUse
 		if err != nil {
 			clearScreen()
 			showWrongInputMessage()
-			clearScreen()
 			continue
 		}
 

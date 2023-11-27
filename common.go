@@ -10,6 +10,18 @@ import (
 	"time"
 )
 
+func showMessage(message string) {
+	showSymbolsRow()
+	showSymbolsRowWithMessage(message, ROW_LENGTH)
+	showSymbolsRow()
+	time.Sleep(time.Duration(MESSAGE_DISPLAY_DURATION) * time.Second)
+	clearScreen()
+}
+
+func showWrongInputMessage() {
+	showMessage("Wrong input! Try again...")
+}
+
 // TODO Not a cross-platform solution...
 func clearScreen() {
 	cmd := exec.Command("cmd", "/c", "cls")
@@ -29,7 +41,6 @@ func fillCoffeeMachineWithGlasses(glassesLeft *int) {
 	if err != nil {
 		clearScreen()
 		showWrongInputMessage()
-		clearScreen()
 		return
 	}
 
@@ -41,27 +52,17 @@ func fillCoffeeMachineWithGlasses(glassesLeft *int) {
 	totalGlasses += newGlasses
 
 	if newGlasses <= 0 {
-		showSymbolsRowWithMessage("Are you kidding me?", ROW_LENGTH)
+		showMessage("Are you kidding me?")
 	} else if totalGlasses > GLASSES_CAPACITY {
-		showSymbolsRowWithMessage("Too much glasses!", ROW_LENGTH)
-
 		if leftCapacity > 0 {
-			showSymbolsRowWithMessage("Try to insert less. You can only", ROW_LENGTH)
-			showSymbolsRowWithMessage(fmt.Sprintf("load %v glasses.", leftCapacity), ROW_LENGTH)
+			showMessage(fmt.Sprintf("Too much glasses! Try to insert less. You can only load %v glasses", leftCapacity))
 		} else {
-			showSymbolsRowWithMessage("You can't load any glasses!", ROW_LENGTH)
-			showSymbolsRowWithMessage("Container is full!", ROW_LENGTH)
+			showMessage("Too much glasses! You can't load any glasses! Container is full!")
 		}
 	} else {
 		*glassesLeft = totalGlasses
-		showSymbolsRowWithMessage("You successfully filled up the coffee box", ROW_LENGTH)
-		showSymbolsRowWithMessage(fmt.Sprintf("with %v glasses", newGlasses), ROW_LENGTH)
+		showMessage(fmt.Sprintf("You successfully filled up the coffee box with %v glasses", newGlasses))
 	}
-	showSymbolsRow()
-	fmt.Println()
-	fmt.Println()
-	time.Sleep(2 * time.Second)
-	clearScreen()
 }
 
 func checkAccess(availablePinInputAttempts int) int {
@@ -69,15 +70,13 @@ func checkAccess(availablePinInputAttempts int) int {
 	r := bufio.NewReader(os.Stdin)
 
 	for availablePinInputAttempts > 0 {
-		fmt.Println("Please, enter a PIN number")
-		fmt.Print("or press 0 to exit: ")
+		fmt.Println("Please, enter a PIN number or press 0 to exit:")
 
 		res, err := selectOption(r)
 
 		if err != nil {
 			clearScreen()
 			showWrongInputMessage()
-			clearScreen()
 		}
 
 		userChoise = res
@@ -91,11 +90,10 @@ func checkAccess(availablePinInputAttempts int) int {
 			return 1
 		}
 
+		// TODO Do we need to restore pin input attempts if user finally successfully entered service menu?
 		availablePinInputAttempts--
-		showSymbolsRow()
-		showSymbolsRowWithMessage("Wrong PIN number!", ROW_LENGTH)
-		showSymbolsRow()
-		fmt.Println()
+
+		showMessage("Wrong PIN number")
 	}
 
 	return -1
@@ -143,7 +141,6 @@ func addSugar() int {
 			return 0
 		default:
 			showWrongInputMessage()
-			fmt.Println()
 		}
 	}
 }
@@ -180,7 +177,6 @@ func adjustPortionSize() int {
 		if err != nil {
 			clearScreen()
 			showWrongInputMessage()
-			clearScreen()
 			continue
 		}
 
@@ -191,21 +187,13 @@ func adjustPortionSize() int {
 			return currentPortionSize
 		case 1:
 			if currentPortionSize >= 8 {
-				showSymbolsRow()
-				showSymbolsRowWithMessage("Sorry, can't increase sugar portion!", ROW_LENGTH)
-				showSymbolsRowWithMessage("It's maximum", ROW_LENGTH)
-				showSymbolsRow()
-				time.Sleep(2 * time.Second)
+				showMessage("Sorry, can't increase sugar portion! It's maximum")
 			} else {
 				currentPortionSize++
 			}
 		case 2:
 			if currentPortionSize <= 0 {
-				showSymbolsRow()
-				showSymbolsRowWithMessage("Sorry, can't decrease sugar portion!", ROW_LENGTH)
-				showSymbolsRowWithMessage("It's minimum!", ROW_LENGTH)
-				showSymbolsRow()
-				time.Sleep(2 * time.Second)
+				showMessage("Sorry, can't decrease sugar portion! It's minimum!")
 			} else {
 				currentPortionSize--
 			}

@@ -7,6 +7,7 @@ const PRICE_LATTE float32 = 4
 const GLASSES_CAPACITY int = 600
 const PIN int = 7878
 const MAX_SUGAR_PORTION_SIZE int = 8
+const MESSAGE_DISPLAY_DURATION int = 2
 
 const BYN_BILL_05 float32 = 0.5
 const BYN_BILL_1 float32 = 1

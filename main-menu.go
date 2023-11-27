@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"time"
 )
 
 func callMainMenu(glasses *int, userBalance *float32, cashBalance *float32, availablePinInputAttempts int) {
@@ -45,11 +44,7 @@ func callMainMenu(glasses *int, userBalance *float32, cashBalance *float32, avai
 		case 5:
 			switch checkAccess(availablePinInputAttempts) {
 			case 0:
-				showSymbolsRow()
-				showSymbolsRowWithMessage("You cancelled operation", ROW_LENGTH)
-				showSymbolsRow()
-				fmt.Println()
-				fmt.Println()
+				showMessage("You cancelled operation")
 			case 1:
 				callServiceMenu(glasses, cashBalance, userBalance, availablePinInputAttempts)
 			case -1:
@@ -69,22 +64,25 @@ func callMainMenu(glasses *int, userBalance *float32, cashBalance *float32, avai
 }
 
 func showMainMenu(userBalance float32, glasses int) {
-	showLogo()
+	showHeader("ESPRESSO BIANCCI")
 	showSymbolsRowWithMessage("MAIN MENU", ROW_LENGTH)
 	showSymbolsRow()
 	fmt.Printf("%-25v %v BYN\n", "Cash balance:", userBalance)
 	showSymbolsRow()
 	fmt.Printf("%-25v %v\n", "Number of glasses:", glasses)
 	showSymbolsRow()
-	showCoffeeList()
+
+	showSymbolsRowWithMessage("Select coffee", ROW_LENGTH)
+	showSymbolsRow()
+	fmt.Printf("*%-22v %-5v %-12v\n", "1. Cappuccino", PRICE_CAPPUCCINO, "*")
+	fmt.Printf("*%-20v %-7v %-12v\n", "2. Espresso", PRICE_ESPRESSO, "*")
+	fmt.Printf("*%-17v %-10v %-12v\n", "3. Latte", PRICE_LATTE, "*")
+	showSymbolsRow()
+
 	fmt.Printf("*%-24v %-15v\n", "4. Cash deposit", "*")
 	showSymbolsRow()
 	fmt.Printf("*%-19v %-20v\n", "5. Service", "*")
 	showSymbolsRow()
-}
-
-func showLogo() {
-	showHeader("ESPRESSO BIANCCI")
 }
 
 func showHeader(headerText string) {
@@ -94,15 +92,6 @@ func showHeader(headerText string) {
 	showSymbolsRowWithMessage(headerText, ROW_LENGTH)
 	fmt.Println()
 	showSymbolsRow()
-	showSymbolsRow()
-}
-
-func showCoffeeList() {
-	showSymbolsRowWithMessage("Select coffee", ROW_LENGTH)
-	showSymbolsRow()
-	fmt.Printf("*%-22v %-5v %-12v\n", "1. Cappuccino", PRICE_CAPPUCCINO, "*")
-	fmt.Printf("*%-20v %-7v %-12v\n", "2. Espresso", PRICE_ESPRESSO, "*")
-	fmt.Printf("*%-17v %-10v %-12v\n", "3. Latte", PRICE_LATTE, "*")
 	showSymbolsRow()
 }
 
@@ -125,38 +114,19 @@ func showCashDepositMenu() {
 }
 
 func showCoffeeIsPurchased() {
-	showSymbolsRow()
-	showSymbolsRowWithMessage("Take your coffee, please!", ROW_LENGTH)
-	showSymbolsRow()
-	time.Sleep(2 * time.Second)
-	clearScreen()
+	showMessage("Take your coffee, please!")
 }
 
 func showNotEnoughMoneyWarning() {
-	showSymbolsRow()
-	showSymbolsRowWithMessage("Sorry, you don't have enough money!", ROW_LENGTH)
-	showSymbolsRowWithMessage("You need to put some cash", ROW_LENGTH)
-	showSymbolsRowWithMessage("in coffe machine", ROW_LENGTH)
-	showSymbolsRow()
-	time.Sleep(2 * time.Second)
-	clearScreen()
+	showMessage("Sorry, you don't have enough money!\nYou need to put some cash\nin coffe machine")
 }
 
 func showNoGlassesWarning() {
-	showSymbolsRow()
-	showSymbolsRowWithMessage("Sorry we don't have glasses! Please,", ROW_LENGTH)
-	showSymbolsRowWithMessage("call our manager: ", ROW_LENGTH)
-	showSymbolsRow()
-	time.Sleep(2 * time.Second)
-	clearScreen()
+	showMessage(fmt.Sprintf("Sorry we don't have glasses! Please, call our manager: %v", MANAGER_CONTACTS))
 }
 
 func showMoneyFromUser(byn float32) {
-	showSymbolsRow()
-	fmt.Printf(" You put in coffe machine %0.1f BYN \n", byn)
-	showSymbolsRow()
-	time.Sleep(2 * time.Second)
-	clearScreen()
+	showMessage(fmt.Sprintf(" You put in coffe machine %0.1f BYN \n", byn))
 }
 
 func showSymbolsRow() {
@@ -189,15 +159,6 @@ func showSymbolsRowWithMessage(message string, rowLength int) {
 	fmt.Printf(" *\n")
 }
 
-func showWrongInputMessage() {
-	showSymbolsRow()
-	showSymbolsRowWithMessage("Wrong input! Try again...", ROW_LENGTH)
-	showSymbolsRow()
-	time.Sleep(2 * time.Second)
-	clearScreen()
-	fmt.Print(" *\n")
-}
-
 func callCashDepositMenu(userBalance *float32, cashBalance *float32) int {
 
 	r := bufio.NewReader(os.Stdin)
@@ -216,7 +177,6 @@ func callCashDepositMenu(userBalance *float32, cashBalance *float32) int {
 		if err != nil {
 			clearScreen()
 			showWrongInputMessage()
-			clearScreen()
 			continue
 		}
 
