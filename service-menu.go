@@ -56,14 +56,6 @@ func showServiceMenu(currentGlassesNubmer int, w *Wallet) {
 	showSymbolsRow()
 }
 
-func showProceeds(cash float32) {
-	fmt.Printf("Available proceeds is %v BYN", cash)
-}
-
-func showGlasses(glassesCount int) {
-	fmt.Printf("%v glasses left", glassesCount)
-}
-
 func giveOutProceed(w *Wallet) {
 	proceeds := w.withdrawProceeds()
 

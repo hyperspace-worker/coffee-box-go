@@ -201,10 +201,11 @@ func giveCoffeeToUser(w *Wallet, price float32, glasses *int) {
 		return
 	}
 
-	isSuccess := w.tryWithdrawMoney(price) // TODO handle error if needed
+	isSuccess := w.tryWithdrawMoney(price)
 
 	if isSuccess {
 		addSugar()
+		*glasses--
 		showCoffeeIsPurchased()
 		return
 	}
