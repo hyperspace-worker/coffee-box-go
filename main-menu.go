@@ -6,14 +6,14 @@ import (
 	"os"
 )
 
-func callMainMenu(glasses *int, userBalance *float32, cashBalance *float32, availablePinInputAttempts int) {
+func callMainMenu(glasses *int, w *Wallet, availablePinInputAttempts int) {
 
 	r := bufio.NewReader(os.Stdin)
 
 	for true {
 		choiseOption := 0
 
-		showMainMenu(*userBalance, *glasses)
+		showMainMenu(w, *glasses)
 
 		fmt.Print("Please, choise option: ")
 
@@ -34,19 +34,19 @@ func callMainMenu(glasses *int, userBalance *float32, cashBalance *float32, avai
 
 		switch choiseOption {
 		case 1:
-			giveCoffeeToUser(userBalance, PRICE_CAPPUCCINO, glasses)
+			giveCoffeeToUser(w, PRICE_CAPPUCCINO, glasses)
 		case 2:
-			giveCoffeeToUser(userBalance, PRICE_ESPRESSO, glasses)
+			giveCoffeeToUser(w, PRICE_ESPRESSO, glasses)
 		case 3:
-			giveCoffeeToUser(userBalance, PRICE_LATTE, glasses)
+			giveCoffeeToUser(w, PRICE_LATTE, glasses)
 		case 4:
-			callCashDepositMenu(userBalance, cashBalance)
+			callCashDepositMenu(w)
 		case 5:
 			switch checkAccess(availablePinInputAttempts) {
 			case 0:
 				showMessage("You cancelled operation")
 			case 1:
-				callServiceMenu(glasses, cashBalance, userBalance, availablePinInputAttempts)
+				callServiceMenu(glasses, w, availablePinInputAttempts)
 			case -1:
 				fmt.Println()
 				showSymbolsRow()
@@ -63,11 +63,11 @@ func callMainMenu(glasses *int, userBalance *float32, cashBalance *float32, avai
 	}
 }
 
-func showMainMenu(userBalance float32, glasses int) {
+func showMainMenu(w *Wallet, glasses int) {
 	showHeader("ESPRESSO BIANCCI")
 	showSymbolsRowWithMessage("MAIN MENU", ROW_LENGTH)
 	showSymbolsRow()
-	fmt.Printf("%-25v %v BYN\n", "Cash balance:", userBalance)
+	fmt.Printf("%-25v %v BYN\n", "Cash balance:", w.balance)
 	showSymbolsRow()
 	fmt.Printf("%-25v %v\n", "Number of glasses:", glasses)
 	showSymbolsRow()
@@ -125,10 +125,6 @@ func showNoGlassesWarning() {
 	showMessage(fmt.Sprintf("Sorry we don't have glasses! Please, call our manager: %v", MANAGER_CONTACTS))
 }
 
-func showMoneyFromUser(byn float32) {
-	showMessage(fmt.Sprintf(" You put in coffe machine %0.1f BYN \n", byn))
-}
-
 func showSymbolsRow() {
 	for i := 0; i < ROW_LENGTH; i++ {
 		fmt.Print("*")
@@ -159,7 +155,7 @@ func showSymbolsRowWithMessage(message string, rowLength int) {
 	fmt.Printf(" *\n")
 }
 
-func callCashDepositMenu(userBalance *float32, cashBalance *float32) int {
+func callCashDepositMenu(w *Wallet) int {
 
 	r := bufio.NewReader(os.Stdin)
 
@@ -188,25 +184,25 @@ func callCashDepositMenu(userBalance *float32, cashBalance *float32) int {
 		case 0:
 			return 0
 		case 1:
-			getMoneyFromUser(userBalance, cashBalance, BYN_BILL_05)
+			depositMoney(w, BYN_BILL_05)
 		case 2:
-			getMoneyFromUser(userBalance, cashBalance, BYN_BILL_1)
+			depositMoney(w, BYN_BILL_1)
 		case 3:
-			getMoneyFromUser(userBalance, cashBalance, BYN_BILL_2)
+			depositMoney(w, BYN_BILL_2)
 		case 4:
-			getMoneyFromUser(userBalance, cashBalance, BYN_BILL_5)
+			depositMoney(w, BYN_BILL_5)
 		case 5:
-			getMoneyFromUser(userBalance, cashBalance, BYN_BILL_10)
+			depositMoney(w, BYN_BILL_10)
 		case 6:
-			getMoneyFromUser(userBalance, cashBalance, BYN_BILL_20)
+			depositMoney(w, BYN_BILL_20)
 		case 7:
-			getMoneyFromUser(userBalance, cashBalance, BYN_BILL_50)
+			depositMoney(w, BYN_BILL_50)
 		case 8:
-			getMoneyFromUser(userBalance, cashBalance, BYN_BILL_100)
+			depositMoney(w, BYN_BILL_100)
 		case 9:
-			getMoneyFromUser(userBalance, cashBalance, BYN_BILL_200)
+			depositMoney(w, BYN_BILL_200)
 		case 10:
-			getMoneyFromUser(userBalance, cashBalance, BYN_BILL_500)
+			depositMoney(w, BYN_BILL_500)
 		default:
 			showWrongInputMessage()
 		}

@@ -1,5 +1,6 @@
 package main
 
+// TODO move constants to enums
 const ROW_LENGTH int = 40
 const PRICE_CAPPUCCINO float32 = 3
 const PRICE_ESPRESSO float32 = 3.5

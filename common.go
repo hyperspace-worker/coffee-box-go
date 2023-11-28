@@ -99,17 +99,6 @@ func checkAccess(availablePinInputAttempts int) int {
 	return -1
 }
 
-func checkGlasses(availableGlasses int) int {
-	if availableGlasses == 0 {
-		return 0
-	}
-	return availableGlasses
-}
-
-func isMoneyEnough(currentBalance *float32, itemPrice float32) bool {
-	return *currentBalance >= itemPrice
-}
-
 func addSugar() int {
 	choiseOption := 0
 	r := bufio.NewReader(os.Stdin)
@@ -205,25 +194,27 @@ func adjustPortionSize() int {
 	}
 }
 
-func giveCoffeeToUser(userBalance *float32, price float32, glasses *int) {
-	if checkGlasses(*glasses) > 0 {
-		if isMoneyEnough(userBalance, price) {
-			addSugar()
-			*userBalance -= price
-			*glasses--
-			showCoffeeIsPurchased()
-		} else {
-			showNotEnoughMoneyWarning()
-		}
-	} else {
+// TODO Add notification if glasses count less than 5 pc
+func giveCoffeeToUser(w *Wallet, price float32, glasses *int) {
+	if *glasses <= 0 {
 		showNoGlassesWarning()
+		return
 	}
+
+	isSuccess := w.tryWithdrawMoney(price) // TODO handle error if needed
+
+	if isSuccess {
+		addSugar()
+		showCoffeeIsPurchased()
+		return
+	}
+
+	showNotEnoughMoneyWarning()
 }
 
-func getMoneyFromUser(userBalance *float32, cashBalance *float32, byn float32) {
-	showMoneyFromUser(byn)
-	*userBalance += byn
-	*cashBalance += byn
+func depositMoney(w *Wallet, byn float32) {
+	w.depositMoney(byn)
+	showMessage(fmt.Sprintf(" You put in coffe machine %0.2f BYN \n", byn))
 }
 
 func selectOption(r *bufio.Reader) (int, error) {

@@ -21,10 +21,9 @@ func main() {
 	var glasses int = 7
 	var availablePinInputAttempts int = 3
 
-	var userBalance float32 = 0
-	var cashBalance float32 = 0
+	wallet := Wallet{}
 
 	clearScreen()
 
-	callMainMenu(&glasses, &userBalance, &cashBalance, availablePinInputAttempts)
+	callMainMenu(&glasses, &wallet, availablePinInputAttempts)
 }

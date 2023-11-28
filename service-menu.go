@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func callServiceMenu(currentGlassesNumber *int, allowedCash *float32, currentUserBalance *float32, availablePinInputAttempts int) int {
+func callServiceMenu(currentGlassesNumber *int, w *Wallet, availablePinInputAttempts int) int {
 
 	r := bufio.NewReader(os.Stdin)
 
@@ -14,7 +14,7 @@ func callServiceMenu(currentGlassesNumber *int, allowedCash *float32, currentUse
 		choiseOption := -1
 		availablePinInputAttempts = MAX_PIN_INPUT_ATTEMPTS
 
-		showServiceMenu(*currentGlassesNumber, *allowedCash)
+		showServiceMenu(*currentGlassesNumber, w)
 
 		fmt.Println("Select option or press 0 to exit: ")
 
@@ -32,10 +32,10 @@ func callServiceMenu(currentGlassesNumber *int, allowedCash *float32, currentUse
 
 		switch choiseOption {
 		case 0:
-			*currentUserBalance = 0
+			w.resetUserBalance()
 			return 0
 		case 1:
-			giveOutProceed(allowedCash)
+			giveOutProceed(w)
 		case 2:
 			fillCoffeeMachineWithGlasses(currentGlassesNumber)
 		default:
@@ -44,9 +44,9 @@ func callServiceMenu(currentGlassesNumber *int, allowedCash *float32, currentUse
 	}
 }
 
-func showServiceMenu(currentGlassesNubmer int, allowedCash float32) {
+func showServiceMenu(currentGlassesNubmer int, w *Wallet) {
 	showHeader("Service menu")
-	fmt.Printf("%-25v %v BYN\n", "Cash balance:", allowedCash)
+	fmt.Printf("%-25v %v BYN\n", "Cash balance:", w.proceeds)
 	showSymbolsRow()
 	fmt.Printf("%-25v %v BYN\n", "Glasses left:", currentGlassesNubmer)
 	showSymbolsRow()
@@ -64,14 +64,15 @@ func showGlasses(glassesCount int) {
 	fmt.Printf("%v glasses left", glassesCount)
 }
 
-func giveOutProceed(availableCash *float32) {
-	*availableCash = 0
+func giveOutProceed(w *Wallet) {
+	proceeds := w.withdrawProceeds()
 
 	showSymbolsRow()
 	showSymbolsRowWithMessage("Opening the lock...", ROW_LENGTH)
 	showSymbolsRowWithMessage("Opened.", ROW_LENGTH)
 	showSymbolsRowWithMessage("You successfully take out", ROW_LENGTH)
-	showSymbolsRowWithMessage("all proceeds.", ROW_LENGTH)
+	showSymbolsRowWithMessage("all proceeds", ROW_LENGTH)
+	showSymbolsRowWithMessage(fmt.Sprintf("(%0.2f BYN total)", proceeds), ROW_LENGTH)
 	showSymbolsRow()
 	fmt.Println()
 	fmt.Println()
