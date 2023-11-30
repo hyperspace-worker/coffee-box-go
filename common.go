@@ -195,17 +195,17 @@ func adjustPortionSize() int {
 }
 
 // TODO Add notification if glasses count less than 5 pc
-func giveCoffeeToUser(w *Wallet, s *ItemStorage, price float32) {
-	if !s.areAnyGlasses() {
+func giveCoffeeToUser(gs *GlobalState, price float32) {
+	if !gs.storage.areAnyGlasses() {
 		showNoGlassesWarning()
 		return
 	}
 
-	isSuccess := w.tryWithdrawMoney(price)
+	isSuccess := gs.wallet.tryWithdrawMoney(price)
 
 	if isSuccess {
 		addSugar()
-		s.getCup()
+		gs.storage.getCup()
 		showCoffeeIsPurchased()
 		return
 	}

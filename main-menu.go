@@ -6,14 +6,14 @@ import (
 	"os"
 )
 
-func callMainMenu(s *ItemStorage, w *Wallet, availablePinInputAttempts int) {
+func callMainMenu(s *GlobalState) {
 
 	r := bufio.NewReader(os.Stdin)
 
 	for true {
 		choiseOption := 0
 
-		showMainMenu(w, s)
+		showMainMenu(s)
 
 		fmt.Print("Please, choise option: ")
 
@@ -34,21 +34,17 @@ func callMainMenu(s *ItemStorage, w *Wallet, availablePinInputAttempts int) {
 
 		switch choiseOption {
 		case 1:
-			giveCoffeeToUser(w, s, PRICE_CAPPUCCINO)
+			giveCoffeeToUser(s, PRICE_CAPPUCCINO)
 		case 2:
-			giveCoffeeToUser(w, s, PRICE_ESPRESSO)
+			giveCoffeeToUser(s, PRICE_ESPRESSO)
 		case 3:
-			giveCoffeeToUser(w, s, PRICE_LATTE)
+			giveCoffeeToUser(s, PRICE_LATTE)
 		case 4:
-			callCashDepositMenu(w)
+			callCashDepositMenu(&s.wallet)
 		case 5:
-			switch checkAccess(availablePinInputAttempts) {
-			case 0:
-				showMessage("You cancelled operation")
-			case 1:
-				callServiceMenu(s, w, availablePinInputAttempts)
+			switch checkAccess(s.pinInputAttempts) {
 			case -1:
-				fmt.Println()
+				clearScreen()
 				showSymbolsRow()
 				showSymbolsRowWithMessage("The coffe machine is blocked!", ROW_LENGTH)
 				showSymbolsRowWithMessage("Reason: too many PIN input attempts.", ROW_LENGTH)
@@ -56,6 +52,10 @@ func callMainMenu(s *ItemStorage, w *Wallet, availablePinInputAttempts int) {
 				showSymbolsRowWithMessage(MANAGER_CONTACTS, ROW_LENGTH)
 				showSymbolsRow()
 				return
+			case 0:
+				showMessage("You cancelled operation")
+			case 1:
+				callServiceMenu(s)
 			}
 		default:
 			showWrongInputMessage()
@@ -63,13 +63,18 @@ func callMainMenu(s *ItemStorage, w *Wallet, availablePinInputAttempts int) {
 	}
 }
 
-func showMainMenu(w *Wallet, s *ItemStorage) {
+func showBlockedScreen() {
+	showSymbolsRow()
+	showSymbolsRow()
+}
+
+func showMainMenu(s *GlobalState) {
 	showHeader("ESPRESSO BIANCCI")
 	showSymbolsRowWithMessage("MAIN MENU", ROW_LENGTH)
 	showSymbolsRow()
-	fmt.Printf("%-25v %v BYN\n", "Cash balance:", w.balance)
+	fmt.Printf("%-25v %v BYN\n", "Cash balance:", s.wallet.balance)
 	showSymbolsRow()
-	fmt.Printf("%-25v %v\n", "Number of glasses:", s.cups)
+	fmt.Printf("%-25v %v\n", "Number of glasses:", s.storage.cups)
 	showSymbolsRow()
 
 	showSymbolsRowWithMessage("Select coffee", ROW_LENGTH)

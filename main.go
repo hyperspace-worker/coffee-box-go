@@ -18,12 +18,11 @@ func main() {
 
 	time.Sleep(2 * time.Second)
 
-	var availablePinInputAttempts int = MAX_PIN_INPUT_ATTEMPTS
-
-	storage := ItemStorage{cups: 7}
 	wallet := Wallet{}
+	storage := ItemStorage{cups: 7}
+	state := GlobalState{wallet, storage, MAX_PIN_INPUT_ATTEMPTS}
 
 	clearScreen()
 
-	callMainMenu(&storage, &wallet, availablePinInputAttempts)
+	callMainMenu(&state)
 }
