@@ -29,11 +29,11 @@ func clearScreen() {
 	cmd.Run()
 }
 
-func fillCoffeeMachineWithGlasses(glassesLeft *int) {
+func fillCoffeeMachineWithGlasses(s *ItemStorage) {
 	r := bufio.NewReader(os.Stdin)
 	newGlasses := 0
-	totalGlasses := *glassesLeft
-	leftCapacity := GLASSES_CAPACITY - *glassesLeft
+	totalGlasses := s.cups
+	leftCapacity := GLASSES_CAPACITY - s.cups
 
 	fmt.Println("How many glasses you want to insert?")
 	res, err := selectOption(r)
@@ -60,7 +60,7 @@ func fillCoffeeMachineWithGlasses(glassesLeft *int) {
 			showMessage("Too much glasses! You can't load any glasses! Container is full!")
 		}
 	} else {
-		*glassesLeft = totalGlasses
+		s.cups = totalGlasses
 		showMessage(fmt.Sprintf("You successfully filled up the coffee box with %v glasses", newGlasses))
 	}
 }
@@ -195,8 +195,8 @@ func adjustPortionSize() int {
 }
 
 // TODO Add notification if glasses count less than 5 pc
-func giveCoffeeToUser(w *Wallet, price float32, glasses *int) {
-	if *glasses <= 0 {
+func giveCoffeeToUser(w *Wallet, s *ItemStorage, price float32) {
+	if !s.areAnyGlasses() {
 		showNoGlassesWarning()
 		return
 	}
@@ -205,7 +205,7 @@ func giveCoffeeToUser(w *Wallet, price float32, glasses *int) {
 
 	if isSuccess {
 		addSugar()
-		*glasses--
+		s.getCup()
 		showCoffeeIsPurchased()
 		return
 	}

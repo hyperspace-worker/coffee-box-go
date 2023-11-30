@@ -18,12 +18,12 @@ func main() {
 
 	time.Sleep(2 * time.Second)
 
-	var glasses int = 7
-	var availablePinInputAttempts int = 3
+	var availablePinInputAttempts int = MAX_PIN_INPUT_ATTEMPTS
 
+	storage := ItemStorage{cups: 7}
 	wallet := Wallet{}
 
 	clearScreen()
 
-	callMainMenu(&glasses, &wallet, availablePinInputAttempts)
+	callMainMenu(&storage, &wallet, availablePinInputAttempts)
 }

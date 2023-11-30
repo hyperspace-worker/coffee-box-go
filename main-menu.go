@@ -6,14 +6,14 @@ import (
 	"os"
 )
 
-func callMainMenu(glasses *int, w *Wallet, availablePinInputAttempts int) {
+func callMainMenu(s *ItemStorage, w *Wallet, availablePinInputAttempts int) {
 
 	r := bufio.NewReader(os.Stdin)
 
 	for true {
 		choiseOption := 0
 
-		showMainMenu(w, *glasses)
+		showMainMenu(w, s)
 
 		fmt.Print("Please, choise option: ")
 
@@ -34,11 +34,11 @@ func callMainMenu(glasses *int, w *Wallet, availablePinInputAttempts int) {
 
 		switch choiseOption {
 		case 1:
-			giveCoffeeToUser(w, PRICE_CAPPUCCINO, glasses)
+			giveCoffeeToUser(w, s, PRICE_CAPPUCCINO)
 		case 2:
-			giveCoffeeToUser(w, PRICE_ESPRESSO, glasses)
+			giveCoffeeToUser(w, s, PRICE_ESPRESSO)
 		case 3:
-			giveCoffeeToUser(w, PRICE_LATTE, glasses)
+			giveCoffeeToUser(w, s, PRICE_LATTE)
 		case 4:
 			callCashDepositMenu(w)
 		case 5:
@@ -46,7 +46,7 @@ func callMainMenu(glasses *int, w *Wallet, availablePinInputAttempts int) {
 			case 0:
 				showMessage("You cancelled operation")
 			case 1:
-				callServiceMenu(glasses, w, availablePinInputAttempts)
+				callServiceMenu(s, w, availablePinInputAttempts)
 			case -1:
 				fmt.Println()
 				showSymbolsRow()
@@ -63,13 +63,13 @@ func callMainMenu(glasses *int, w *Wallet, availablePinInputAttempts int) {
 	}
 }
 
-func showMainMenu(w *Wallet, glasses int) {
+func showMainMenu(w *Wallet, s *ItemStorage) {
 	showHeader("ESPRESSO BIANCCI")
 	showSymbolsRowWithMessage("MAIN MENU", ROW_LENGTH)
 	showSymbolsRow()
 	fmt.Printf("%-25v %v BYN\n", "Cash balance:", w.balance)
 	showSymbolsRow()
-	fmt.Printf("%-25v %v\n", "Number of glasses:", glasses)
+	fmt.Printf("%-25v %v\n", "Number of glasses:", s.cups)
 	showSymbolsRow()
 
 	showSymbolsRowWithMessage("Select coffee", ROW_LENGTH)

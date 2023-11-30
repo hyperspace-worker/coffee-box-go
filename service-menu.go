@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func callServiceMenu(currentGlassesNumber *int, w *Wallet, availablePinInputAttempts int) int {
+func callServiceMenu(s *ItemStorage, w *Wallet, availablePinInputAttempts int) int {
 
 	r := bufio.NewReader(os.Stdin)
 
@@ -14,7 +14,7 @@ func callServiceMenu(currentGlassesNumber *int, w *Wallet, availablePinInputAtte
 		choiseOption := -1
 		availablePinInputAttempts = MAX_PIN_INPUT_ATTEMPTS
 
-		showServiceMenu(*currentGlassesNumber, w)
+		showServiceMenu(s, w)
 
 		fmt.Println("Select option or press 0 to exit: ")
 
@@ -37,18 +37,18 @@ func callServiceMenu(currentGlassesNumber *int, w *Wallet, availablePinInputAtte
 		case 1:
 			giveOutProceed(w)
 		case 2:
-			fillCoffeeMachineWithGlasses(currentGlassesNumber)
+			fillCoffeeMachineWithGlasses(s)
 		default:
 			showWrongInputMessage()
 		}
 	}
 }
 
-func showServiceMenu(currentGlassesNubmer int, w *Wallet) {
+func showServiceMenu(s *ItemStorage, w *Wallet) {
 	showHeader("Service menu")
 	fmt.Printf("%-25v %v BYN\n", "Cash balance:", w.proceeds)
 	showSymbolsRow()
-	fmt.Printf("%-25v %v BYN\n", "Glasses left:", currentGlassesNubmer)
+	fmt.Printf("%-25v %v BYN\n", "Glasses left:", s.cups)
 	showSymbolsRow()
 	showSymbolsRowWithMessage("1. Issue proceeds", ROW_LENGTH)
 	showSymbolsRowWithMessage("2. Load the glasses", ROW_LENGTH)
